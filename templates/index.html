@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Fraud Detection</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Insurance Fraud Detection</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" required>
+            <button type="submit">Upload and Detect</button>
+        </form>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+            displayResults(result);
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Fraud Detection Results</h2>';
+            resultsDiv.innerHTML += '<table><tr><th>Policy No</th><th>Fraud Risk</th><th>High Premium</th><th>Potential Fraud</th></tr>';
+            data.forEach(row => {
+                resultsDiv.innerHTML += `<tr>
+                    <td>${row['Dummy Policy No']}</td>
+                    <td>${row['Fraud_Risk']}</td>
+                    <td>${row['High_Premium']}</td>
+                    <td>${row['Potential_Fraud']}</td>
+                </tr>`;
+            });
+            resultsDiv.innerHTML += '</table>';
+        }
+    </script>
+</body>
+</html>
